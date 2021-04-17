@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { Dimensions, StyleSheet, Text, View, Image } from 'react-native'
 import { colors } from '../Colors'
 import { useFonts } from 'expo-font';
 import Header from '../items/Header';
 import Constants from 'expo-constants'
 import Footer from '../items/Footer';
+import { StatusBar } from 'expo-status-bar';
 
-const Play = () => {
+const Play = ({changePage}) => {
     let [fontsLoaded] = useFonts({
         'poppins-Light' : require('../assets/fonts/Poppins-Light.ttf'),
         'poppins-Medium' : require('../assets/fonts/Poppins-Medium.ttf'),
@@ -17,6 +18,18 @@ const Play = () => {
     const [currentScore, setCurrentScore] = useState(0);
     const [randomNumber1, setRandomNumber1] = useState();
     const [randomNumber2, setRandomNumber2] = useState(Math.floor(Math.random()*100));
+    const [counter, setCounter] = useState(10);
+    const [attempt, setAttempt] = useState(0);
+    const id = useRef(null);
+    const clearTImer = ()=>{
+        window.clearInterval(id.current)
+    }
+
+    const restartGame = ()=>{
+        setCurrentScore(0);
+        setCounter(10);
+        setAttempt(t=>t+1);
+    }
 
     const answerProblem = (answer)=>{
         if((randomNumber1+randomNumber2)%2!=0){
@@ -36,14 +49,54 @@ const Play = () => {
     useEffect(()=>{
         setRandomNumber1(Math.floor(Math.random()*100));
         setRandomNumber2(Math.floor(Math.random()*100));
-    },[changeNumerator])
+    },[changeNumerator]);
+
+    useEffect(()=>{
+        id.current= window.setInterval(()=>{
+            if(counter>0){
+                setCounter(time=>time-1);
+            }
+        }, 1000);
+
+        return ()=>clearTImer();
+    },[attempt]);
+
+    useEffect(()=>{
+        if(counter===0){
+            clearTImer();
+        }
+    }, [counter])
     return (
         <View style={styles.playcontainer}>
-            <Header left={'06.57'} right={'quit'}/>
-            {fontsLoaded &&
+            <StatusBar style="light"/>
+            <Header
+                left={('0'+Math.floor(counter/60)).slice(-2)+':'+('0'+(counter-Math.floor(counter/60)*60)).slice(-2)}
+                right={'quit'}
+                rightAction={()=>{
+                    changePage('home');
+                }}
+            />
+            {counter!=0 && fontsLoaded &&
                 <Text style={[styles.problemtext, {fontFamily: 'poppins-Bold'}]}>{randomNumber1+' + '+randomNumber2}</Text>
             }
-            <Footer left={'Odd'} right={'Even'} leftAction={()=>answerProblem(false)} rightAction={()=>answerProblem(true)}/>
+            <View style={[styles.playImageContainer, counter!=0 && {display: 'none'}]}>
+                <Image
+                    style={styles.playImage}
+                    source={require('../assets/business-3d-122.png')}
+                    resizeMode="contain"
+                />
+            </View>
+            {fontsLoaded && counter===0 &&
+            <>
+                <Text style={[styles.problemtext, {fontFamily: 'poppins-Bold', fontSize: 50, marginTop: 10}]}>Awesome!</Text>
+                <Text style={[styles.problemtext, {fontFamily: 'poppins-Medium', fontSize: 20, marginTop: 0}]}>{'You Scored '+currentScore+'!'}</Text>
+            </>
+            }
+            {counter!=0 ?
+                (<Footer left={'Odd'} right={'Even'} leftAction={()=>answerProblem(false)} rightAction={()=>answerProblem(true)}/>)
+                :
+                (<Footer left={'Quit'} right={'Again'} leftAction={()=>changePage('home')} rightAction={restartGame}/>)
+            }
         </View>
     )
 }
@@ -62,5 +115,21 @@ const styles = StyleSheet.create({
         color: colors.dwhite,
         fontSize: 60,
         marginTop: 40
+    },
+    playImage:{
+        width: Dimensions.get('screen').width-30,
+        height: Dimensions.get('screen').width-30,
+        borderWidth: 10,
+    },
+    playImageContainer: {
+        alignItems: 'center',
+        marginTop: 30,
+        borderRadius: 200,
+        overflow: 'hidden',
+        width: Dimensions.get('screen').width-100,
+        height: Dimensions.get('screen').width-100,
+        backgroundColor: colors.lcyan,
+        borderWidth: 10,
+        borderColor: colors.dwhite
     }
 })

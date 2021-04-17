@@ -4,7 +4,7 @@ import { colors } from '../Colors'
 import Constants from 'expo-constants'
 import { useFonts } from 'expo-font';
 
-const Header = ({left, right}) => {
+const Header = ({left, right, leftAction, rightAction}) => {
     let [fontsLoaded] = useFonts({
         'poppins-Light' : require('../assets/fonts/Poppins-Light.ttf'),
         'poppins-Medium' : require('../assets/fonts/Poppins-Medium.ttf'),
@@ -15,10 +15,10 @@ const Header = ({left, right}) => {
         <View style={styles.headercontainer}>
             {fontsLoaded &&
             <>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={leftAction}>
                     <Text style={[styles.headerbuttontext, {fontFamily: 'poppins-Bold', textAlign: 'left', marginLeft: 25}]}>{left}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={rightAction}>
                     <Text style={[styles.headerbuttontext, {fontFamily: 'poppins-Bold', textAlign: 'right', marginRight: 25}]}>{right}</Text>
                 </TouchableOpacity>
             </>

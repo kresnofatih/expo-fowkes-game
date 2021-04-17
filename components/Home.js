@@ -4,7 +4,7 @@ import { colors } from '../Colors'
 import { useFonts } from 'expo-font';
 import Constants from 'expo-constants'
 
-const Home = () => {
+const Home = ({changePage}) => {
     let [fontsLoaded] = useFonts({
         'poppins-Light' : require('../assets/fonts/Poppins-Light.ttf'),
         'poppins-Medium' : require('../assets/fonts/Poppins-Medium.ttf'),
@@ -27,14 +27,14 @@ const Home = () => {
                     {'increase your\ndaily focus.'}
                 </Text>
                 <View style={{height: 150}}></View>
-                <TouchableOpacity style={styles.homebutton}>
+                <TouchableOpacity style={styles.homebutton} onPress={()=>changePage('play')}>
                     <Text style={[styles.homebuttontext, fontsLoaded && {fontFamily: 'poppins-Bold'}]}>
                         play
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.homebutton}>
                     <Text style={[styles.homebuttontext, fontsLoaded && {fontFamily: 'poppins-Bold'}]}>
-                        tutorial
+                        about
                     </Text>
                 </TouchableOpacity>
             </>

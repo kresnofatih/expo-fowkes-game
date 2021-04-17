@@ -11,6 +11,7 @@ const Footer = ({left, right, leftAction, rightAction}) => {
         'poppins-Bold' : require('../assets/fonts/Poppins-Bold.ttf'),
     });
     return (
+        <>
         <View style={styles.footercontainer}>
             {fontsLoaded &&
             <>
@@ -23,6 +24,7 @@ const Footer = ({left, right, leftAction, rightAction}) => {
             </>
             }
         </View>
+        </>
     )
 }
 

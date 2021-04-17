@@ -1,15 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from './Colors';
 import Home from './components/Home';
 import Play from './components/Play';
 
 export default function App() {
+  const [page, setPage] = useState('home');
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      {/* <Home/> */}
-      <Play/>
+      {page==='home' &&
+        <Home changePage={setPage}/>
+      }
+      {page==='play' &&
+        <Play changePage={setPage}/>
+      }
     </View>
   );
 }
@@ -17,7 +23,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.dgray,
     alignItems: 'center',
     justifyContent: 'center',
   },
