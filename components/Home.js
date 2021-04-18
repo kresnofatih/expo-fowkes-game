@@ -32,11 +32,11 @@ const Home = ({changePage}) => {
                         play
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.homebutton}>
+                {/* <TouchableOpacity style={styles.homebutton}>
                     <Text style={[styles.homebuttontext, fontsLoaded && {fontFamily: 'poppins-Bold'}]}>
                         about
                     </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </>
             }
         </View>

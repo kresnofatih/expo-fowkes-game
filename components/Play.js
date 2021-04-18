@@ -16,9 +16,10 @@ const Play = ({changePage}) => {
     });
     const [changeNumerator, setChangeNumerator] = useState(0);
     const [currentScore, setCurrentScore] = useState(0);
+    const [currentMiss, setCurrentMiss] = useState(0);
     const [randomNumber1, setRandomNumber1] = useState();
     const [randomNumber2, setRandomNumber2] = useState(Math.floor(Math.random()*100));
-    const [counter, setCounter] = useState(10);
+    const [counter, setCounter] = useState(900);
     const [attempt, setAttempt] = useState(0);
     const id = useRef(null);
     const clearTImer = ()=>{
@@ -27,6 +28,7 @@ const Play = ({changePage}) => {
 
     const restartGame = ()=>{
         setCurrentScore(0);
+        setCurrentMiss(0);
         setCounter(10);
         setAttempt(t=>t+1);
     }
@@ -34,13 +36,15 @@ const Play = ({changePage}) => {
     const answerProblem = (answer)=>{
         if((randomNumber1+randomNumber2)%2!=0){
             if(answer===false){
-                console.log('correct');
                 setCurrentScore(currentScore+1);
+            } else {
+                setCurrentMiss(currentMiss+1);
             }
         } else {
             if(answer===true){
-                console.log('correct');
                 setCurrentScore(currentScore+1);
+            } else {
+                setCurrentMiss(currentMiss+1);
             }
         }
 
@@ -70,8 +74,9 @@ const Play = ({changePage}) => {
         <View style={styles.playcontainer}>
             <StatusBar style="light"/>
             <Header
-                left={('0'+Math.floor(counter/60)).slice(-2)+':'+('0'+(counter-Math.floor(counter/60)*60)).slice(-2)}
-                right={'quit'}
+                left={counter!=0 ? ('0'+Math.floor(counter/60)).slice(-2)+':'+('0'+(counter-Math.floor(counter/60)*60)).slice(-2) : 'Again'}
+                leftAction={restartGame}
+                right={'Quit'}
                 rightAction={()=>{
                     changePage('home');
                 }}
@@ -89,13 +94,15 @@ const Play = ({changePage}) => {
             {fontsLoaded && counter===0 &&
             <>
                 <Text style={[styles.problemtext, {fontFamily: 'poppins-Bold', fontSize: 50, marginTop: 10}]}>Awesome!</Text>
-                <Text style={[styles.problemtext, {fontFamily: 'poppins-Medium', fontSize: 20, marginTop: 0}]}>{'You Scored '+currentScore+'!'}</Text>
+                <Text style={[styles.problemtext, {fontFamily: 'poppins-Medium', fontSize: 20, marginTop: 0}]}>{'You Scored '+currentScore+' and Missed '+currentMiss+'!'}</Text>
+                {/* <Text style={[styles.problemtext, {fontFamily: 'poppins-Medium', fontSize: 20, marginTop: 0}]}>{'and Missed '+currentMiss+'!'}</Text> */}
             </>
             }
             {counter!=0 ?
                 (<Footer left={'Odd'} right={'Even'} leftAction={()=>answerProblem(false)} rightAction={()=>answerProblem(true)}/>)
                 :
-                (<Footer left={'Quit'} right={'Again'} leftAction={()=>changePage('home')} rightAction={restartGame}/>)
+                // (<Footer left={'Quit'} right={'Again'} leftAction={()=>changePage('home')} rightAction={restartGame}/>)
+                <></>
             }
         </View>
     )
